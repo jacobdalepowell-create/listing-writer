@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en-NZ">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Listing Writer</title>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+--bg:#f3f4f6;--card:#fff;--ink:#111827;--mute:#6b7280;--line:#e5e7eb;--acc:#0f766e;--accink:#fff;--soft:#ecfdf5}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0e1116;--card:#171b22;--ink:#e8eaed;--mute:#8b93a1;--line:#2a303a;--acc:#2dd4bf;--accink:#06201c;--soft:#10231f}}
+:root[data-theme="dark"]{--bg:#0e1116;--card:#171b22;--ink:#e8eaed;--mute:#8b93a1;--line:#2a303a;--acc:#2dd4bf;--accink:#06201c;--soft:#10231f}
+*{box-sizing:border-box}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;height:100%;background:var(--bg);color:var(--ink);font:15px/1.5 Inter,system-ui,-apple-system,"Segoe UI",sans-serif;display:flex;flex-direction:column}
+header{display:flex;align-items:center;justify-content:space-between;padding:14px 24px;background:var(--card);border-bottom:1px solid var(--line)}
+.brand{display:flex;align-items:center;gap:10px;font-weight:700;font-size:1.05rem}
+.logo{width:30px;height:30px;border-radius:8px;background:var(--acc);color:var(--accink);display:grid;place-items:center;font-size:16px}
+.tag{font-size:.8rem;color:var(--mute)}
+.app{flex:1;min-height:0;display:grid;grid-template-columns:420px 1fr}
+aside{background:var(--card);border-right:1px solid var(--line);overflow-y:auto;padding:22px 24px}
+section.res{overflow-y:auto;padding:28px 36px}
+h2{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);margin:0 0 14px}
+label{display:block;font-size:.8rem;font-weight:600;margin:14px 0 5px}
+input,select,textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--bg);color:var(--ink);font:inherit}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--acc);outline-offset:-1px}
+textarea{min-height:110px;resize:vertical}
+.row{display:flex;gap:10px}.row>div{flex:1}
+.seg{display:flex;gap:6px}
+.seg button{flex:1;margin:0;padding:9px 6px;background:var(--bg);color:var(--ink);border:1px solid var(--line);font-weight:600;font-size:.82rem}
+.seg button.on{background:var(--acc);color:var(--accink);border-color:var(--acc)}
+button{border:0;border-radius:8px;font:inherit;cursor:pointer}
+#go{width:100%;margin-top:20px;padding:13px;background:var(--acc);color:var(--accink);font-weight:700;font-size:1rem}
+#go:disabled{opacity:.5;cursor:default}
+.msg{font-size:.82rem;color:var(--mute);margin-top:10px;min-height:1.2em}
+.err{color:#dc2626}
+.empty{height:100%;display:grid;place-items:center;text-align:center;color:var(--mute)}
+.empty .big{font-size:2.4rem}
+.out{max-width:760px;margin:0 auto}
+.blk{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:18px 20px;margin-bottom:16px}
+.bh{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.bh span{font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);font-weight:700}
+.cp{background:var(--soft);color:var(--acc);padding:5px 12px;font-size:.78rem;font-weight:700}
+.ttl{font-size:1.25rem;font-weight:700;line-height:1.35}
+.body{white-space:pre-wrap;word-wrap:break-word}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--soft);color:var(--acc);border-radius:999px;padding:3px 11px;font-size:.82rem;font-weight:600}
+.miss{border-color:#f59e0b}
+.miss li{margin:3px 0}
+.sk{height:14px;border-radius:6px;background:var(--line);margin:10px 0;animation:p 1.2s infinite}
+@keyframes p{50%{opacity:.4}}
+.legal{font-size:.78rem;color:var(--mute);text-align:center;margin-top:8px}
+@media (max-width:820px){.app{display:block;overflow-y:auto}aside{border-right:0;border-bottom:1px solid var(--line);overflow:visible}section.res{overflow:visible;padding:20px 16px}}
+</style>
+</head>
+<body>
+<header>
+<div class="brand"><div class="logo">✎</div>Listing Writer</div>
+<div class="tag">Built for NZ sellers</div>
+</header>
+<div class="app">
+<aside>
+<h2>Item details</h2>
+<label>Platform</label>
+<div class="seg" id="plat"><button class="on">Trade Me</button><button>Facebook</button><button>Etsy</button></div>
+<label for="item">Item</label>
+<input id="item" placeholder="e.g. Nike Air Max 90, size US 9">
+<div class="row">
+<div><label for="cond">Condition</label><select id="cond"><option>New</option><option>Like new</option><option selected>Good</option><option>Fair</option><option>For parts</option></select></div>
+<div><label for="price">Price (NZD)</label><input id="price" inputmode="decimal" placeholder="80"></div>
+</div>
+<label for="facts">Facts, features and flaws</label>
+<textarea id="facts" placeholder="Only what is true: brand, size, colour, age, scuffs, what's included..."></textarea>
+<label for="ship">Pickup / postage</label>
+<input id="ship" placeholder="Pickup Takapuna or $7 courier NZ-wide">
+<label for="tone">Tone</label>
+<select id="tone"><option>Friendly and casual</option><option>Professional</option><option>Short and punchy</option><option>Warm and handmade</option></select>
+<button id="go">Write listing</button>
+<div class="msg" id="msg"></div>
+</aside>
+<section class="res" id="res">
+<div class="empty"><div><div class="big">✎</div><p>Your listing will appear here.<br>Fill in the details and press Write listing.</p></div></div>
+</section>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+let plat="Trade Me";
+
+document.querySelectorAll("#plat button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("#plat button").forEach(x=>x.classList.remove("on"));
+  b.classList.add("on"); plat=b.textContent==="Facebook"?"Facebook Marketplace":b.textContent;
+});
+function esc(s){const d=document.createElement("div");d.textContent=s==null?"":String(s);return d.innerHTML}
+function copyBtn(t){return `<button class="cp" data-t="${esc(t).replace(/"/g,"&quot;")}">Copy</button>`}
+function render(r){
+  const kws=Array.isArray(r.keywords)?r.keywords:String(r.keywords||"").split(",");
+  const miss=Array.isArray(r.missing)?r.missing.filter(Boolean):[];
+  const all=`${r.title}\n\n${r.description}\n\n${kws.join(", ")}`;
+  $("res").innerHTML=`<div class="out">
+  <div class="blk"><div class="bh"><span>Title</span>${copyBtn(r.title)}</div><div class="ttl">${esc(r.title)}</div></div>
+  <div class="blk"><div class="bh"><span>Description</span>${copyBtn(r.description)}</div><div class="body">${esc(r.description)}</div></div>
+  <div class="blk"><div class="bh"><span>Keywords</span>${copyBtn(kws.join(", "))}</div><div class="chips">${kws.map(k=>`<span class="chip">${esc(k.trim())}</span>`).join("")}</div></div>
+  ${miss.length?`<div class="blk miss"><div class="bh"><span>Ask the seller</span></div><ul>${miss.map(m=>`<li>${esc(m)}</li>`).join("")}</ul></div>`:""}
+  <div class="bh" style="justify-content:center">${copyBtn(all).replace("Copy","Copy everything")}</div>
+  <div class="legal">Check every claim is true before posting. Misleading listings can breach the Fair Trading Act.</div></div>`;
+  document.querySelectorAll(".cp").forEach(b=>b.onclick=async()=>{
+    const o=b.textContent;
+    try{await navigator.clipboard.writeText(b.dataset.t);b.textContent="Copied"}catch(e){b.textContent="Select and copy"}
+    setTimeout(()=>b.textContent=o,1500);
+  });
+}
+$("go").onclick=async()=>{
+  const item=$("item").value.trim(), facts=$("facts").value.trim();
+  if(!item||!facts){ $("msg").className="msg err"; $("msg").textContent="Add the item and a few facts."; return; }
+  $("msg").className="msg"; $("msg").textContent=""; $("go").disabled=true; $("go").textContent="Writing...";
+  $("res").innerHTML=`<div class="out"><div class="blk"><div class="sk" style="width:70%"></div></div><div class="blk"><div class="sk"></div><div class="sk"></div><div class="sk" style="width:80%"></div><div class="sk" style="width:60%"></div></div></div>`;
+  try{
+    const resp=await fetch("/api/listing",{method:"POST",headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({platform:plat,item,facts,condition:$("cond").value,price:$("price").value,ship:$("ship").value,tone:$("tone").value})});
+    const data=await resp.json();
+    if(!resp.ok) throw new Error(data.error||"Request failed");
+    render(data);
+  }catch(e){
+    $("res").innerHTML=`<div class="empty"><p>Nothing generated.</p></div>`;
+    $("msg").className="msg err"; $("msg").textContent=e.message||"Something went wrong. Try again.";
+  }
+  $("go").disabled=false; $("go").textContent="Write listing";
+};
+</script>
+</body>
+</html>
